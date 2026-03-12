@@ -1,0 +1,8 @@
+[book]
+title = "Typedream Core Audit — March 2026"
+authors = ["Nightwatch QA"]
+language = "en"
+src = "src"
+
+[output.html]
+default-theme = "light"

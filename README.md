@@ -36,6 +36,14 @@ See `/offers/README.md` for detail, but the quick view:
 5. Lens assembles the mdBook report from `/reports/templates` (pending) and exports PDF via Pandoc.
 6. Pulse delivers the repo links + PDF and handles follow-up.
 
+### Intake automation
+
+Use the  workflow (Actions tab) when a Typeform payload arrives outside the usual webhook. Paste the JSON blob, run the workflow, and it will:
+- Store the payload under 
+- Create a labeled  issue populated with the key fields
+- Commit the payload for auditing
+
+
 ## Getting started
 - Clone the repo, run `npm install` inside `/automation/playwright` (once we add package files).
 - Copy `/workflow/intake-schema.md` into your Typeform (or replacement) builder.

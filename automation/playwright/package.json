@@ -1,0 +1,25 @@
+{
+  "name": "nightwatch-playwright",
+  "version": "0.1.0",
+  "description": "Baseline Nightwatch QA Playwright harness with tagged audit scenarios.",
+  "main": "index.js",
+  "scripts": {
+    "test": "playwright test",
+    "test:headed": "playwright test --headed",
+    "audit:landing": "playwright test --grep @landing",
+    "audit:signup": "playwright test --grep @signup",
+    "audit:checkout": "playwright test --grep @checkout"
+  },
+  "keywords": [
+    "nightwatch",
+    "qa",
+    "playwright"
+  ],
+  "author": "Nightwatch QA",
+  "license": "MIT",
+  "devDependencies": {
+    "@playwright/test": "^1.44.1",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.4.5"
+  }
+}

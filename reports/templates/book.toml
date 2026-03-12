@@ -1,0 +1,13 @@
+[book]
+title = "Nightwatch QA Report"
+authors = ["Nightwatch QA"]
+language = "en"
+multilingual = false
+src = "src"
+
+[output.html]
+default-theme = "light"
+preferred-dark-theme = "navy"
+
+[output.html.playwright]
+additional-css = ["../styles/report.css"]

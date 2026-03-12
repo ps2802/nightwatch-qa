@@ -1,4 +1,4 @@
-name: Intake JSON to Issue (placeholder)
+name: Intake JSON to Issue
 
 on:
   workflow_dispatch:
@@ -8,16 +8,45 @@ on:
         required: true
         type: string
 
+permissions:
+  contents: write
+  issues: write
+
 jobs:
-  create-issue:
+  create-intake:
     runs-on: ubuntu-latest
     steps:
-      - name: Decode payload
+      - name: Check out repo
+        uses: actions/checkout@v4
+
+      - name: Persist raw payload
         run: |
-          echo "$PAYLOAD" > intake.json
+          mkdir -p workflow
+          printf '%s' "${{ github.event.inputs.payload }}" > workflow/intake.json
+
+      - name: Parse payload and prep issue
+        id: ingest
+        run: node workflow/scripts/ingest-intake.mjs
         env:
-          PAYLOAD: "${{ github.event.inputs.payload }}"
-      - name: Print instructions
+          INTAKE_PAYLOAD_PATH: workflow/intake.json
+
+      - name: Create GitHub issue
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          echo "TODO: parse intake.json and call gh issue create using client-intake template."
-          echo "Store the raw JSON under workflow/intake-drops/ once automation is ready."
+          gh issue create \
+            --title "${{ steps.ingest.outputs.issue_title }}" \
+            --body-file "${{ steps.ingest.outputs.issue_body_path }}" \
+            --label intake
+
+      - name: Commit intake drop
+        run: |
+          git config user.name "nightwatch-intake-bot"
+          git config user.email "ops@nightwatch.qa"
+          git add workflow/intake-drops
+          if git diff --cached --quiet; then
+            echo "No new intake payload to commit."
+            exit 0
+          fi
+          git commit -m "chore: add intake drop ${{ steps.ingest.outputs.issue_title }}"
+          git push
