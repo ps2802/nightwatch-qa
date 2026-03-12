@@ -1,0 +1,59 @@
+name: Audit Run
+description: Track an overnight audit execution
+labels: ["in-flight"]
+title: "[Run] <Client> – <Flow>"
+body:
+  - type: input
+    id: intake
+    attributes:
+      label: Intake issue link
+      placeholder: #123
+    validations:
+      required: true
+  - type: textarea
+    id: personas
+    attributes:
+      label: Personas
+      description: Link persona YAML files from /workflow
+    validations:
+      required: true
+  - type: textarea
+    id: scenarios
+    attributes:
+      label: Scenario coverage
+      placeholder: Desktop Chrome, iOS Safari, etc.
+    validations:
+      required: true
+  - type: textarea
+    id: automation
+    attributes:
+      label: Automation plan
+      placeholder: Playwright scripts, manual passes
+    validations:
+      required: true
+  - type: textarea
+    id: assignments
+    attributes:
+      label: Agent assignments
+      placeholder: Spin, Outline, Echo, Funnel, Lens, Pulse, Ledger
+    validations:
+      required: true
+  - type: textarea
+    id: risks
+    attributes:
+      label: Risks / watchpoints
+    validations:
+      required: false
+  - type: checkboxes
+    id: status
+    attributes:
+      label: Status gates
+      options:
+        - label: Intake complete
+        - label: Payment confirmed
+        - label: Automation running
+        - label: Findings logged
+        - label: Report drafted
+        - label: Delivery sent
+    validations:
+      required: false

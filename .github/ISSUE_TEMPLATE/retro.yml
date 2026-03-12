@@ -1,0 +1,31 @@
+name: Retro
+description: Capture learnings after an audit
+labels: ["retro"]
+title: "[Retro] <Client> – <Date>"
+body:
+  - type: textarea
+    id: wins
+    attributes:
+      label: What went well?
+    validations:
+      required: true
+  - type: textarea
+    id: misses
+    attributes:
+      label: What broke or slipped?
+    validations:
+      required: true
+  - type: textarea
+    id: metrics
+    attributes:
+      label: Metrics snapshot
+      placeholder: Response times, findings count, conversion impact
+    validations:
+      required: false
+  - type: textarea
+    id: actions
+    attributes:
+      label: Action items
+      placeholder: Who owns the fix + deadline
+    validations:
+      required: true

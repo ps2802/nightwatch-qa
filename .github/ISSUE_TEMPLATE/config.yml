@@ -1,0 +1,6 @@
+blank_issues_enabled: false
+template: []
+contact_links:
+  - name: Quick question
+    url: mailto:nightwatch@praneet.me
+    about: Use only for non-audit questions.

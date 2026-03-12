@@ -1,0 +1,9 @@
+# Generated artifacts
+node_modules/
+dist/
+.playwright-cache/
+reports/raw/**/*
+.env
+.DS_Store
+Thumbs.db
+coverage/

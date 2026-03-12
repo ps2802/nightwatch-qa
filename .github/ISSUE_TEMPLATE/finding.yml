@@ -1,0 +1,62 @@
+name: Finding
+description: Log a UX/copy/conversion issue with evidence
+labels: ["finding"]
+title: "[Finding] <Client> – <Short name>"
+body:
+  - type: dropdown
+    id: severity
+    attributes:
+      label: Severity
+      options:
+        - P0 (blocking)
+        - P1 (high)
+        - P2 (medium)
+        - P3 (low)
+    validations:
+      required: true
+  - type: dropdown
+    id: area
+    attributes:
+      label: Area
+      options:
+        - UX
+        - Copy
+        - Conversion
+        - Technical
+    validations:
+      required: true
+  - type: input
+    id: surface
+    attributes:
+      label: Surface
+      placeholder: Desktop / Mobile / Checkout / etc.
+    validations:
+      required: true
+  - type: textarea
+    id: description
+    attributes:
+      label: Description
+      placeholder: What’s broken and why it matters?
+    validations:
+      required: true
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Evidence links
+      placeholder: /reports/raw/... , Loom URLs, log snippets
+    validations:
+      required: true
+  - type: textarea
+    id: recommendation
+    attributes:
+      label: Recommendation
+      placeholder: Proposed fix or experiment
+    validations:
+      required: true
+  - type: input
+    id: owner
+    attributes:
+      label: Agent owner
+      placeholder: Outline / Echo / Funnel / Spin
+    validations:
+      required: true

@@ -1,0 +1,16 @@
+# Example persona template
+persona: "First-time crypto buyer"
+job_to_be_done: "Buy SOL using a debit card and stake it"
+device: "iPhone 15 Safari"
+network: "4G mid-signal"
+experience_level: "Web2 native, minimal crypto"
+pain_points:
+  - "Wallet jargon"
+  - "Confusing KYC steps"
+  - "Slow loading modals"
+success_criteria:
+  - "Understands each step"
+  - "Never forced to leave mobile"
+  - "Fee transparency"
+notes: |
+  Outline and Spin own persona definitions. Store finalized personas per client under `workflow/personas/<client>-<date>.yml`.
