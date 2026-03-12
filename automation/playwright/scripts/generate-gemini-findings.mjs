@@ -142,7 +142,10 @@ async function main() {
   const metadata = argv.metadata ? JSON.parse(await readFile(argv.metadata, 'utf8')) : undefined;
 
   const genAI = new GoogleGenerativeAI(apiKey);
-  const modelId = process.env.GEMINI_MODEL || 'gemini-1.5-flash';
+  const modelId =
+    process.env.NIGHTWATCH_GEMINI_MODEL ||
+    process.env.GEMINI_MODEL ||
+    'gemini-3-flash-preview';
   const model = genAI.getGenerativeModel({ model: modelId });
 
   const contextChunks = [];
