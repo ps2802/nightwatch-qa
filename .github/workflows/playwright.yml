@@ -1,0 +1,80 @@
+name: Playwright E2E
+
+on:
+  push:
+    branches: [main, master, 'claude/**']
+  pull_request:
+    branches: [main, master]
+  workflow_dispatch:
+    inputs:
+      grep:
+        description: 'Test tag filter (e.g. @checkout, @e2e)'
+        required: false
+        default: ''
+      project:
+        description: 'Browser project (chromium | mobile-chrome | all)'
+        required: false
+        default: 'chromium'
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    name: Playwright Tests
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: automation/playwright
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps chromium
+
+      - name: Run Playwright tests
+        run: |
+          GREP="${{ github.event.inputs.grep }}"
+          PROJECT="${{ github.event.inputs.project || 'chromium' }}"
+          ARGS=""
+          if [ -n "$GREP" ]; then
+            ARGS="$ARGS --grep $GREP"
+          fi
+          if [ "$PROJECT" != "all" ]; then
+            ARGS="$ARGS --project $PROJECT"
+          fi
+          npx playwright test $ARGS
+        env:
+          CI: true
+          BASE_URL: ${{ vars.BASE_URL || 'https://example.com' }}
+          CHECKOUT_URL: ${{ vars.CHECKOUT_URL || 'https://www.saucedemo.com/' }}
+          CHECKOUT_USER: ${{ secrets.CHECKOUT_USER || 'standard_user' }}
+          CHECKOUT_PASSWORD: ${{ secrets.CHECKOUT_PASSWORD || 'secret_sauce' }}
+          LANDING_URL: ${{ vars.LANDING_URL || '' }}
+          SIGNUP_URL: ${{ vars.SIGNUP_URL || '' }}
+
+      - name: Upload HTML report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report-${{ github.run_id }}
+          path: reports/html/
+          retention-days: 30
+
+      - name: Upload raw evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-evidence-${{ github.run_id }}
+          path: reports/raw/tmp/
+          retention-days: 7
