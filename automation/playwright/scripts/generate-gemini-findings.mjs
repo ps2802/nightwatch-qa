@@ -5,7 +5,7 @@ import process from 'node:process';
 import { GoogleGenerativeAI } from '@google/generative-ai';
 
 function printUsage() {
-  console.error(`Usage: node scripts/generate-gemini-findings.mjs --image <png> --json <out.json> [--metadata <metadata.json>] [--markdown <out.md>]`);
+  console.error(`Usage: node scripts/generate-gemini-findings.mjs --image <png> --json <out.json> [--metadata <metadata.json>] [--markdown <out.md>] [--flow <flow-name>]`);
 }
 
 function parseArgs(argv) {
@@ -14,6 +14,7 @@ function parseArgs(argv) {
     metadata: undefined,
     json: undefined,
     markdown: undefined,
+    flow: undefined,
   };
   for (let index = 0; index < argv.length; index += 1) {
     const key = argv[index];
@@ -36,6 +37,10 @@ function parseArgs(argv) {
         break;
       case '--markdown':
         args.markdown = value;
+        index += 1;
+        break;
+      case '--flow':
+        args.flow = value;
         index += 1;
         break;
       default:
@@ -71,9 +76,9 @@ function safeJsonParse(text) {
   }
 }
 
-function fallbackFindings(rawText) {
+function fallbackFindings(rawText, flow) {
   return {
-    flow: 'checkout-overview',
+    flow: flow || 'unknown',
     summary: 'Gemini response could not be parsed as JSON. See raw field for details.',
     findings: rawText
       ? [
@@ -90,7 +95,8 @@ function fallbackFindings(rawText) {
 
 function findingsToMarkdown(payload) {
   const lines = [];
-  lines.push('# Gemini Findings — Checkout Demo');
+  const flowLabel = payload.flow ? `— ${payload.flow}` : '';
+  lines.push(`# Gemini Findings ${flowLabel}`.trim());
   lines.push('');
   lines.push(`- Model: ${payload.model}`);
   lines.push(`- Generated: ${payload.generatedAt}`);
@@ -145,7 +151,7 @@ async function main() {
   const modelId =
     process.env.NIGHTWATCH_GEMINI_MODEL ||
     process.env.GEMINI_MODEL ||
-    'gemini-3-flash-preview';
+    'gemini-1.5-flash';
   const model = genAI.getGenerativeModel({ model: modelId });
 
   const contextChunks = [];
@@ -156,11 +162,12 @@ async function main() {
     contextChunks.push(`Page title: ${metadata.title}`);
   }
 
+  const flowName = argv.flow || 'unknown';
   const promptText = [
-    'You are assisting a QA engineer who needs concise UX findings from a checkout overview screenshot.',
+    `You are assisting a QA engineer who needs concise UX findings from a screenshot of the "${flowName}" flow.`,
     'Return JSON with this exact shape:',
     '{',
-    '  "flow": "checkout-overview",',
+    `  "flow": "${flowName}",`,
     '  "summary": "<one paragraph>",',
     '  "findings": [',
     '    {',
@@ -193,12 +200,13 @@ async function main() {
   const response = await model.generateContent(contents);
   const text = response?.response?.text?.();
   const parsed = safeJsonParse(normalizeJsonText(text));
-  const findings = parsed ?? fallbackFindings(text);
+  const findings = parsed ?? fallbackFindings(text, flowName);
 
   const payload = {
     generatedAt: new Date().toISOString(),
     model: modelId,
-    promptVersion: 'checkout-v1',
+    flow: flowName,
+    promptVersion: `${flowName}-v1`,
     metadata: metadata ?? null,
     findings,
     raw: text,

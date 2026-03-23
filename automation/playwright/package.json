@@ -6,9 +6,13 @@
   "scripts": {
     "test": "playwright test",
     "test:headed": "playwright test --headed",
+    "ci": "CI=true playwright test",
     "audit:landing": "playwright test --grep @landing",
     "audit:signup": "playwright test --grep @signup",
-    "audit:checkout": "playwright test --grep @checkout"
+    "audit:checkout": "playwright test --grep @checkout",
+    "audit:e2e": "playwright test --grep @e2e",
+    "audit:all": "playwright test --grep \"@landing|@signup|@checkout\"",
+    "report": "playwright show-report ../../reports/html"
   },
   "keywords": [
     "nightwatch",
