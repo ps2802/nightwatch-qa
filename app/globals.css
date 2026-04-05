@@ -1,0 +1,67 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --color-canvas: #f6f1e8;
+  --color-surface: #ffffff;
+  --color-surface-muted: #f1ece4;
+  --color-ink: #172033;
+  --color-muted: #667085;
+  --color-line: rgba(23, 32, 51, 0.12);
+  --color-primary: #2459d6;
+  --color-success: #1f8f5f;
+  --color-warning: #b7791f;
+  --color-danger: #c2413d;
+  --radius-shell: 24px;
+  --radius-card: 18px;
+  --shadow-shell: 0 18px 48px rgba(23, 32, 51, 0.08);
+  --shadow-card: 0 10px 24px rgba(23, 32, 51, 0.06);
+  --space-shell: 1.5rem;
+  --space-section: 1.25rem;
+  --font-sans: "Instrument Sans", sans-serif;
+  --font-mono: "IBM Plex Mono", monospace;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  min-height: 100%;
+  overflow-x: hidden;
+}
+
+body {
+  min-height: 100vh;
+  margin: 0;
+  overflow-x: hidden;
+  background: linear-gradient(180deg, #fbf7f1 0%, var(--color-canvas) 100%);
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+}
+
+::selection {
+  background: rgba(36, 89, 214, 0.18);
+}
+
+@media (max-width: 767px) {
+  :root {
+    --radius-shell: 20px;
+    --radius-card: 16px;
+  }
+}

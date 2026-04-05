@@ -1,8 +1,10 @@
 # Generated artifacts
 node_modules/
 dist/
+.next/
 .playwright-cache/
 reports/raw/**/*
+reports/html/
 .env
 .DS_Store
 Thumbs.db
