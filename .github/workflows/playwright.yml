@@ -8,7 +8,7 @@ on:
   workflow_dispatch:
     inputs:
       grep:
-        description: 'Test tag filter (e.g. @checkout, @e2e)'
+        description: 'Test tag filter (defaults to @northstar when omitted)'
         required: false
         default: ''
       project:
@@ -39,12 +39,15 @@ jobs:
       - name: Install dependencies
         run: npm install
 
+      - name: Install root app dependencies
+        run: npm install --prefix ../..
+
       - name: Install Playwright browsers
         run: npx playwright install --with-deps chromium
 
       - name: Run Playwright tests
         run: |
-          GREP="${{ github.event.inputs.grep }}"
+          GREP="${{ github.event.inputs.grep || '@northstar' }}"
           PROJECT="${{ github.event.inputs.project || 'chromium' }}"
           ARGS=""
           if [ -n "$GREP" ]; then
@@ -56,7 +59,8 @@ jobs:
           npx playwright test $ARGS
         env:
           CI: true
-          BASE_URL: ${{ vars.BASE_URL || 'https://example.com' }}
+          PLAYWRIGHT_PORT: '3100'
+          BASE_URL: ${{ vars.BASE_URL || '' }}
           CHECKOUT_URL: ${{ vars.CHECKOUT_URL || 'https://www.saucedemo.com/' }}
           CHECKOUT_USER: ${{ secrets.CHECKOUT_USER || 'standard_user' }}
           CHECKOUT_PASSWORD: ${{ secrets.CHECKOUT_PASSWORD || 'secret_sauce' }}
