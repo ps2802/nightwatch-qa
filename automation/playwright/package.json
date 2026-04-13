@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "playwright test",
+    "test:chromium": "playwright test --project chromium",
     "test:headed": "playwright test --headed",
     "ci": "CI=true playwright test",
     "audit:landing": "playwright test --grep @landing",

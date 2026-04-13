@@ -80,13 +80,11 @@ test.describe("Northstar smoke coverage", () => {
     await page.getByRole("button", { name: "Preview" }).first().click();
     const reviewDialog = page.getByRole("dialog").filter({ hasText: "Final draft" });
 
-    if (testInfo.project.name === "mobile-chrome") {
-      await expect(reviewDialog).toBeVisible();
-      await reviewDialog.getByRole("button", { name: "Approve" }).click();
-    } else {
-      await expect(reviewDialog).toBeVisible();
-      await reviewDialog.getByRole("button", { name: "Approve" }).click();
-    }
+    // Both projects use the same approval interaction. Pixel 5 emulation validates
+    // responsive layout — dialog renders identically on mobile viewport.
+    // TODO: add genuine mobile assertion (e.g. bottom-sheet class or touch-target ≥ 44px)
+    await expect(reviewDialog).toBeVisible();
+    await reviewDialog.getByRole("button", { name: "Approve" }).click();
 
     await expect(page.getByText("1 waiting")).toBeVisible();
     await page.getByRole("button", { name: "Approved" }).click();
