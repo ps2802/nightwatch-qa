@@ -21,7 +21,7 @@ module.exports = defineConfig({
     timeout: 10_000,
   },
   retries: process.env.CI ? 1 : 0,
-  workers: process.env.CI ? 1 : undefined,
+  workers: process.env.CI ? 2 : undefined, // 2 lets chromium + mobile-chrome run in parallel; safe on ubuntu-latest (7 GB RAM, ~400 MB per Chromium instance)
   fullyParallel: !process.env.CI,
   reporter: [
     ['list'],

@@ -15,7 +15,8 @@ npx playwright install
 
 | Script | Purpose |
 | --- | --- |
-| `npm test` | Headless run of all specs |
+| `npm test` | Headless run of all specs (both projects) |
+| `npm run test:chromium` | Desktop Chrome only — faster local iteration |
 | `npm run test:headed` | Headed run for debugging |
 | `npm run audit:landing` | Filter tests tagged `@landing` |
 | `npm run audit:signup` | Filter tests tagged `@signup` |
@@ -30,7 +31,27 @@ Tag-specific scripts are just shorthands around `playwright test --grep @tag`, s
 - `CHECKOUT_USER` / `CHECKOUT_PASSWORD` let us drive authenticated carts (defaults use SauceDemo fixtures).
 - Artifacts (screens, traces, HAR) drop under `reports/raw/tmp/` so the delivery team can scoop them into client-specific folders.
 
-`playwright.config.ts` keeps retries at 0, enables screenshots + traces on failure, and caps tests to 60s each. Adjust per-client in future env files.
+`playwright.config.js` keeps retries at 1 in CI, enables screenshots + traces on failure, and caps tests to 60s each. Adjust per-client in future env files.
+
+## Projects (browser matrix)
+
+The harness runs two projects in CI by default:
+
+| Project | Device | Use |
+| --- | --- | --- |
+| `chromium` | Desktop Chrome (1280×720) | Default desktop coverage |
+| `mobile-chrome` | Pixel 5 (393×851, Chromium) | Responsive/mobile layout validation |
+
+Both projects run on every `push` and `pull_request`. The `mobile-chrome` project uses Playwright's Pixel 5 viewport emulation — it validates layout and rendering at mobile dimensions, not touch events or real-device behavior.
+
+**Run a single project locally** (faster iteration):
+```bash
+npx playwright test --project chromium --grep @northstar
+# or use the script shorthand:
+npm run test:chromium
+```
+
+**Add a new project** (e.g. Firefox): add it to `playwright.config.js` `projects` array. The CI install step (`npx playwright install --with-deps`) will pick it up automatically.
 
 ## Adding scenarios
 

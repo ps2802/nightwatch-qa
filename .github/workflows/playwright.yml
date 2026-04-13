@@ -12,9 +12,9 @@ on:
         required: false
         default: ''
       project:
-        description: 'Browser project (chromium | mobile-chrome | all)'
+        description: 'Browser project to run: chromium | mobile-chrome | all (runs every project)'
         required: false
-        default: 'chromium'
+        default: 'all'
 
 permissions:
   contents: read
@@ -43,16 +43,21 @@ jobs:
         run: npm install --prefix ../..
 
       - name: Install Playwright browsers
-        run: npx playwright install --with-deps chromium
+        # mobile-chrome uses Pixel 5 emulation on Chromium — no additional binary needed.
+        # Drop the explicit 'chromium' arg so adding Firefox/WebKit projects later
+        # doesn't silently break this step.
+        run: npx playwright install --with-deps
 
       - name: Run Playwright tests
         run: |
           GREP="${{ github.event.inputs.grep || '@northstar' }}"
-          PROJECT="${{ github.event.inputs.project || 'chromium' }}"
+          PROJECT="${{ github.event.inputs.project || 'all' }}"
           ARGS=""
           if [ -n "$GREP" ]; then
             ARGS="$ARGS --grep $GREP"
           fi
+          # 'all' is a sentinel: omitting --project runs every project in playwright.config.js.
+          # Both 'chromium' (Desktop Chrome) and 'mobile-chrome' (Pixel 5) run by default.
           if [ "$PROJECT" != "all" ]; then
             ARGS="$ARGS --project $PROJECT"
           fi
